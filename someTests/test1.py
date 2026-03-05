@@ -1,4 +1,4 @@
-from ..Repositories.ManagerRepository import ManagerRepository
+from Repositories.ManagerRepository import ManagerRepository
 
 database = ManagerRepository()
 database.create("Title", "RandomUser", "Some description", "10:00", 3)

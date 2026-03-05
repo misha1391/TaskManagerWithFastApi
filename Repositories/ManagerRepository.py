@@ -42,6 +42,11 @@ class ManagerRepository:
             cursor = conn.cursor()
             rows = cursor.execute("SELECT * FROM tasks").fetchall()
             return [dict(row) for row in rows]
+    def get_all_tasks_user(self, username: str):
+        with self.connect() as conn:
+            cursor = conn.cursor()
+            rows = cursor.execute("SELECT * FROM tasks WHERE username = ?", username).fetchall()
+            return [dict(row) for row in rows]
     def get_by_id(self, id: int):
         with self.connect() as conn:
             cursor = conn.cursor()

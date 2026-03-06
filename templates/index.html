@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Главная — SchoolOS</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Manrope:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --bg:      #0c0c0f;
+            --surface: #13131a;
+            --border:  #22222e;
+            --accent:  #6c63ff;
+            --accent2: #a78bfa;
+            --text:    #e8e8f0;
+            --muted:   #5a5a72;
+            --error:   #ff5f6d;
+        }
+
+        body {
+            font-family: 'Manrope', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            background-image:
+                radial-gradient(ellipse 55% 45% at 80% 10%, rgba(108,99,255,.1) 0%, transparent 60%),
+                radial-gradient(ellipse 40% 50% at 10% 90%, rgba(167,139,250,.06) 0%, transparent 50%);
+        }
+
+        /* ---- Header ---- */
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px 40px;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            background: rgba(12,12,15,.85);
+            backdrop-filter: blur(12px);
+            z-index: 10;
+        }
+
+        .logo {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: .12em;
+            color: var(--accent2);
+            text-transform: uppercase;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .username-tag {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--muted);
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 5px 10px;
+        }
+
+        .logout-btn {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: .06em;
+            color: var(--error);
+            background: transparent;
+            border: 1px solid rgba(255,95,109,.3);
+            border-radius: 6px;
+            padding: 6px 12px;
+            cursor: pointer;
+            transition: background .2s, border-color .2s;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255,95,109,.08);
+            border-color: var(--error);
+        }
+
+        /* ---- Main ---- */
+        main {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 60px 24px 80px;
+        }
+
+        .welcome {
+            margin-bottom: 52px;
+            animation: fadeIn .5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .welcome-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            color: var(--accent2);
+            margin-bottom: 12px;
+        }
+
+        .welcome h1 {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(28px, 5vw, 42px);
+            font-weight: 700;
+            letter-spacing: -.03em;
+            line-height: 1.1;
+        }
+
+        .welcome h1 span {
+            color: var(--accent2);
+        }
+
+        .welcome p {
+            margin-top: 14px;
+            font-size: 15px;
+            color: var(--muted);
+            line-height: 1.6;
+            max-width: 480px;
+        }
+
+        /* ---- Cards ---- */
+        .section-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 20px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 16px;
+            animation: fadeIn .6s ease .1s both;
+        }
+
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            text-decoration: none;
+            color: var(--text);
+            transition: border-color .2s, transform .2s, box-shadow .2s;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .card:hover {
+            border-color: var(--accent);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(108,99,255,.12);
+        }
+
+        .card-icon {
+            font-size: 22px;
+            line-height: 1;
+        }
+
+        .card-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .card-desc {
+            font-size: 13px;
+            color: var(--muted);
+            line-height: 1.5;
+        }
+
+        /* ---- Divider ---- */
+        .divider {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 48px 0 36px;
+        }
+
+        /* ---- Status ---- */
+        .status-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            color: var(--muted);
+            animation: fadeIn .7s ease .2s both;
+        }
+
+        .dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--success, #4ade80);
+            box-shadow: 0 0 6px rgba(74,222,128,.5);
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 600px) {
+            header { padding: 14px 20px; }
+            main   { padding: 40px 16px 60px; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo">SchoolOS</div>
+    <div class="header-right">
+        <span class="username-tag">{{ username }}</span>
+        <form method="POST" action="/api/logout" style="margin:0">
+            <button class="logout-btn" type="submit">Выйти</button>
+        </form>
+    </div>
+</header>
+
+<main>
+    <div class="welcome">
+        <div class="welcome-label">// Главная</div>
+        <h1>Привет, <span>{{ username }}</span></h1>
+        <p>Добро пожаловать в SchoolOS — систему управления школой. Выберите раздел ниже.</p>
+    </div>
+
+    <div class="section-label">// Разделы</div>
+    <div class="grid">
+        <a href="/grades" class="card">
+            <div class="card-icon">📝</div>
+            <div class="card-title">Оценки</div>
+            <div class="card-desc">Просмотр и управление оценками учеников по предметам</div>
+        </a>
+        <a href="/classes" class="card">
+            <div class="card-icon">🎓</div>
+            <div class="card-title">Классы</div>
+            <div class="card-desc">Список классов, учеников и классных руководителей</div>
+        </a>
+        <a href="/events" class="card">
+            <div class="card-icon">📅</div>
+            <div class="card-title">События</div>
+            <div class="card-desc">Контрольные, поездки и другие школьные мероприятия</div>
+        </a>
+        <a href="/lessons" class="card">
+            <div class="card-icon">📚</div>
+            <div class="card-title">Расписание</div>
+            <div class="card-desc">Уроки по дням недели для каждого класса</div>
+        </a>
+    </div>
+
+    <hr class="divider">
+
+    <div class="status-row">
+        <div class="dot"></div>
+        Система работает нормально
+    </div>
+</main>
+
+</body>
+</html>

@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация — SchoolOS</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Manrope:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --bg:       #0c0c0f;
+            --surface:  #13131a;
+            --border:   #22222e;
+            --accent:   #6c63ff;
+            --accent2:  #a78bfa;
+            --text:     #e8e8f0;
+            --muted:    #5a5a72;
+            --error:    #ff5f6d;
+            --success:  #4ade80;
+        }
+
+        body {
+            font-family: 'Manrope', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            background-image:
+                radial-gradient(ellipse 60% 50% at 70% 20%, rgba(108,99,255,.12) 0%, transparent 60%),
+                radial-gradient(ellipse 40% 40% at 20% 80%, rgba(167,139,250,.07) 0%, transparent 50%);
+        }
+
+        .card {
+            width: 100%;
+            max-width: 420px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 40px 36px;
+            animation: slideUp .4s cubic-bezier(.16,1,.3,1);
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .logo {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: .15em;
+            color: var(--accent2);
+            text-transform: uppercase;
+            margin-bottom: 28px;
+        }
+
+        h1 {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            letter-spacing: -.02em;
+        }
+
+        .subtitle {
+            font-size: 13px;
+            color: var(--muted);
+            margin-bottom: 32px;
+        }
+
+        .field {
+            margin-bottom: 16px;
+        }
+
+        label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: .06em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 8px;
+        }
+
+        input {
+            width: 100%;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px 14px;
+            font-family: 'Manrope', sans-serif;
+            font-size: 14px;
+            color: var(--text);
+            outline: none;
+            transition: border-color .2s, box-shadow .2s;
+        }
+
+        input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(108,99,255,.15);
+        }
+
+        input::placeholder { color: var(--muted); }
+
+        .hint {
+            font-size: 11px;
+            color: var(--muted);
+            margin-top: 5px;
+        }
+
+        .btn {
+            width: 100%;
+            margin-top: 8px;
+            padding: 13px;
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: .06em;
+            cursor: pointer;
+            transition: background .2s, transform .15s;
+        }
+
+        .btn:hover  { background: #7c74ff; }
+        .btn:active { transform: scale(.98); }
+
+        .msg {
+            border-radius: 8px;
+            padding: 11px 14px;
+            font-size: 13px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        .msg.error   { background: rgba(255,95,109,.1); border: 1px solid rgba(255,95,109,.3); color: var(--error); }
+        .msg.success { background: rgba(74,222,128,.1); border: 1px solid rgba(74,222,128,.3); color: var(--success); }
+
+        .footer {
+            margin-top: 24px;
+            text-align: center;
+            font-size: 13px;
+            color: var(--muted);
+        }
+        .footer a { color: var(--accent2); text-decoration: none; }
+        .footer a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+<div class="card">
+    <div class="logo">SchoolOS</div>
+    <h1>Регистрация</h1>
+    <p class="subtitle">Создайте аккаунт, чтобы войти в систему</p>
+
+    <div class="msg" id="msg"></div>
+
+    <form id="form">
+        <div class="field">
+            <label>Имя пользователя</label>
+            <input type="text" id="username" placeholder="ivan_petrov" required minlength="3">
+            <div class="hint">Минимум 3 символа</div>
+        </div>
+        <div class="field">
+            <label>Email</label>
+            <input type="email" id="email" placeholder="ivan@school.ru" required>
+        </div>
+        <div class="field">
+            <label>Код класса</label>
+            <input type="text" id="class_code" placeholder="10А" required minlength="2">
+        </div>
+        <div class="field">
+            <label>Пароль</label>
+            <input type="password" id="password" placeholder="••••••••" required minlength="4">
+            <div class="hint">Минимум 4 символа</div>
+        </div>
+        <div class="field">
+            <label>Подтвердите пароль</label>
+            <input type="password" id="confirm" placeholder="••••••••" required>
+        </div>
+        <button class="btn" type="submit">Зарегистрироваться</button>
+    </form>
+
+    <div class="footer">
+        Уже есть аккаунт? <a href="/login">Войти</a>
+    </div>
+</div>
+
+<script>
+    const msg = document.getElementById('msg');
+
+    function showMsg(text, type) {
+        msg.textContent = text;
+        msg.className = 'msg ' + type;
+        msg.style.display = 'block';
+    }
+
+    document.getElementById('form').addEventListener('submit', async e => {
+        e.preventDefault();
+        const username  = document.getElementById('username').value.trim();
+        const email     = document.getElementById('email').value.trim();
+        const class_code = document.getElementById('class_code').value.trim();
+        const password  = document.getElementById('password').value;
+        const confirm   = document.getElementById('confirm').value;
+
+        if (password !== confirm) return showMsg('Пароли не совпадают', 'error');
+        if (username.length < 3)  return showMsg('Имя пользователя слишком короткое', 'error');
+        if (password.length < 4)  return showMsg('Пароль слишком короткий', 'error');
+        if (class_code.length < 2) return showMsg('Код класса слишком короткий', 'error');
+
+        try {
+            const res  = await fetch('/api/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, email, password, class_code })
+            });
+            const data = await res.json();
+            if (data.success) {
+                showMsg('Аккаунт создан! Переход на вход…', 'success');
+                setTimeout(() => window.location.href = '/login', 1400);
+            } else {
+                showMsg(data.error || 'Ошибка регистрации', 'error');
+            }
+        } catch {
+            showMsg('Ошибка подключения к серверу', 'error');
+        }
+    });
+</script>
+</body>
+</html>

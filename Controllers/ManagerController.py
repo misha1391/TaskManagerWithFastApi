@@ -35,16 +35,16 @@ def make_tasks_router(authService: AuthService, task_service: ManagerService) ->
         return task_service.add_task(username, title, description, time, importance)
 
     @router.put("/tasks")
-    async def update_task(data: Dict[str, Any]):
+    async def update_task(data: Dict[str, Any], session_token: str = Cookie(None)):
 
         id = data.get("id", "")
-        username = data.get("username", "")
+        username = authService.get_username(session_token)
         title = data.get("title", "")
         description = data.get("description", "")
         time = data.get("time", "")
         importance = data.get("importance", "")
 
-        if not (username and title and description and time and importance):
+        if not (id and username and title and description and time and importance):
             return {"success": False, "error": "Заполните все поля!"}
 
         task_service.update_task(id, title, description, time, importance)

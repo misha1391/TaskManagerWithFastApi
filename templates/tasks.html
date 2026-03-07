@@ -35,30 +35,12 @@ justify-content:space-between;
 align-items:center;
 padding:18px 40px;
 border-bottom:1px solid var(--border);
-background:#0c0c0f;
 }
 
 .logo{
 font-family:'JetBrains Mono',monospace;
-color:var(--accent2);
 font-weight:700;
-}
-
-.username-tag{
-font-family:'JetBrains Mono',monospace;
-font-size:12px;
-color:var(--muted);
-}
-
-.logout-btn{
-font-family:'JetBrains Mono',monospace;
-font-size:12px;
-color:var(--error);
-background:transparent;
-border:1px solid rgba(255,95,109,.3);
-border-radius:6px;
-padding:6px 12px;
-cursor:pointer;
+color:var(--accent2);
 }
 
 main{
@@ -85,11 +67,11 @@ color:var(--accent2);
 .add-btn{
 background:var(--accent);
 border:none;
-color:#fff;
+color:white;
 padding:10px 16px;
 border-radius:8px;
-font-family:'JetBrains Mono',monospace;
 cursor:pointer;
+font-family:'JetBrains Mono',monospace;
 }
 
 .tasks{
@@ -123,22 +105,29 @@ font-size:12px;
 color:var(--muted);
 }
 
-.delete-btn{
-font-family:'JetBrains Mono',monospace;
-font-size:11px;
-border:1px solid rgba(255,95,109,.3);
-background:transparent;
-color:var(--error);
-border-radius:6px;
-padding:6px 10px;
-cursor:pointer;
+.actions{
+display:flex;
+gap:8px;
 margin-top:8px;
 }
 
-.empty{
-text-align:center;
-color:var(--muted);
-margin-top:40px;
+.btn{
+font-family:'JetBrains Mono',monospace;
+font-size:11px;
+background:transparent;
+border-radius:6px;
+padding:6px 10px;
+cursor:pointer;
+}
+
+.delete-btn{
+border:1px solid rgba(255,95,109,.3);
+color:var(--error);
+}
+
+.edit-btn{
+border:1px solid rgba(108,99,255,.4);
+color:var(--accent2);
 }
 
 .modal{
@@ -199,14 +188,6 @@ cursor:pointer;
 
 <header>
 <div class="logo">SchoolOS</div>
-
-<div>
-<span class="username-tag">{{ username }}</span>
-
-<form method="POST" action="/api/logout" style="display:inline">
-<button class="logout-btn">Выйти</button>
-</form>
-</div>
 </header>
 
 <main>
@@ -217,7 +198,6 @@ cursor:pointer;
 </div>
 
 <div id="tasks" class="tasks"></div>
-<div id="empty" class="empty" style="display:none">Нет задач</div>
 
 </main>
 
@@ -250,7 +230,7 @@ cursor:pointer;
 </select>
 </div>
 
-<button class="submit-btn">Создать задачу</button>
+<button class="submit-btn" id="submitBtn">Создать задачу</button>
 
 </form>
 
@@ -259,22 +239,15 @@ cursor:pointer;
 
 <script>
 
+let editingTaskId=null;
+
 async function loadTasks(){
 
-const res = await fetch("/api/tasks");
-const tasks = await res.json();
+const res=await fetch("/api/tasks");
+const tasks=await res.json();
 
-const container = document.getElementById("tasks");
-const empty = document.getElementById("empty");
-
+const container=document.getElementById("tasks");
 container.innerHTML="";
-
-if(!tasks.length){
-empty.style.display="block";
-return;
-}
-
-empty.style.display="none";
 
 tasks.forEach(task=>{
 
@@ -283,10 +256,14 @@ el.className="task";
 
 el.innerHTML=`
 <div class="task-title">${task.title}</div>
-<div class="task-desc">${task.description || ""}</div>
-<div class="task-meta">Срок: ${task.time || "-"}</div>
+<div class="task-desc">${task.description||""}</div>
+<div class="task-meta">Срок: ${task.time||"-"}</div>
 <div class="task-meta">Важность: ${task.importance}</div>
-<button class="delete-btn" onclick="deleteTask(${task.id})">Удалить</button>
+
+<div class="actions">
+<button class="btn edit-btn" onclick='editTask(${JSON.stringify(task)})'>Изменить</button>
+<button class="btn delete-btn" onclick="deleteTask(${task.id})">Удалить</button>
+</div>
 `;
 
 container.appendChild(el);
@@ -297,7 +274,7 @@ container.appendChild(el);
 
 async function deleteTask(id){
 
-if(!confirm("Удалить задачу?")) return;
+if(!confirm("Удалить задачу?"))return;
 
 await fetch(`/api/tasks/${id}`,{
 method:"DELETE"
@@ -307,12 +284,34 @@ loadTasks();
 
 }
 
+function editTask(task){
+
+editingTaskId=task.id;
+
+document.getElementById("title").value=task.title;
+document.getElementById("description").value=task.description||"";
+
+if(task.time){
+document.getElementById("time").value=task.time.replace(" ","T");
+}
+
+document.getElementById("importance").value=task.importance;
+
+document.getElementById("submitBtn").textContent="Сохранить";
+
+openModal();
+
+}
+
 function openModal(){
 document.getElementById("modal").style.display="flex";
 }
 
 function closeModal(){
 document.getElementById("modal").style.display="none";
+editingTaskId=null;
+document.getElementById("taskForm").reset();
+document.getElementById("submitBtn").textContent="Создать задачу";
 }
 
 document.getElementById("taskForm").addEventListener("submit",async e=>{
@@ -326,10 +325,13 @@ const title=document.getElementById("title").value;
 const description=document.getElementById("description").value;
 const importance=document.getElementById("importance").value;
 
+const method=editingTaskId?"PUT":"POST";
+
 await fetch("/api/tasks",{
-method:"POST",
+method,
 headers:{"Content-Type":"application/json"},
 body:JSON.stringify({
+id:editingTaskId,
 title,
 description,
 time,

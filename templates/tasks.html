@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
@@ -8,7 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Manrope:wght@300;400;600&display=swap" rel="stylesheet">
 
 <style>
-*, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 
 :root{
 --bg:#0c0c0f;
@@ -26,53 +27,32 @@ font-family:'Manrope',sans-serif;
 background:var(--bg);
 color:var(--text);
 min-height:100vh;
-
-background-image:
-radial-gradient(ellipse 55% 45% at 80% 10%, rgba(108,99,255,.1) 0%, transparent 60%),
-radial-gradient(ellipse 40% 50% at 10% 90%, rgba(167,139,250,.06) 0%, transparent 50%);
 }
 
 header{
 display:flex;
-align-items:center;
 justify-content:space-between;
+align-items:center;
 padding:18px 40px;
 border-bottom:1px solid var(--border);
-position:sticky;
-top:0;
-background:rgba(12,12,15,.85);
-backdrop-filter:blur(12px);
+background:#0c0c0f;
 }
 
 .logo{
-font-family:'JetBrains Mono', monospace;
-font-size:14px;
-font-weight:700;
-letter-spacing:.12em;
+font-family:'JetBrains Mono',monospace;
 color:var(--accent2);
-}
-
-.header-right{
-display:flex;
-align-items:center;
-gap:16px;
+font-weight:700;
 }
 
 .username-tag{
-font-family:'JetBrains Mono', monospace;
+font-family:'JetBrains Mono',monospace;
 font-size:12px;
 color:var(--muted);
-background:var(--surface);
-border:1px solid var(--border);
-border-radius:6px;
-padding:5px 10px;
 }
 
 .logout-btn{
-font-family:'JetBrains Mono', monospace;
+font-family:'JetBrains Mono',monospace;
 font-size:12px;
-font-weight:600;
-letter-spacing:.06em;
 color:var(--error);
 background:transparent;
 border:1px solid rgba(255,95,109,.3);
@@ -81,14 +61,10 @@ padding:6px 12px;
 cursor:pointer;
 }
 
-.logout-btn:hover{
-background:rgba(255,95,109,.08);
-}
-
 main{
 max-width:900px;
 margin:0 auto;
-padding:60px 24px 80px;
+padding:60px 24px;
 }
 
 .section-header{
@@ -99,7 +75,7 @@ margin-bottom:28px;
 }
 
 .section-label{
-font-family:'JetBrains Mono', monospace;
+font-family:'JetBrains Mono',monospace;
 font-size:12px;
 letter-spacing:.14em;
 text-transform:uppercase;
@@ -112,13 +88,8 @@ border:none;
 color:#fff;
 padding:10px 16px;
 border-radius:8px;
-font-family:'JetBrains Mono', monospace;
-font-size:12px;
+font-family:'JetBrains Mono',monospace;
 cursor:pointer;
-}
-
-.add-btn:hover{
-background:#7c74ff;
 }
 
 .tasks{
@@ -135,17 +106,10 @@ padding:20px;
 display:flex;
 flex-direction:column;
 gap:10px;
-transition:.2s;
-}
-
-.task:hover{
-border-color:var(--accent);
-transform:translateY(-3px);
 }
 
 .task-title{
-font-family:'JetBrains Mono', monospace;
-font-size:15px;
+font-family:'JetBrains Mono',monospace;
 font-weight:600;
 }
 
@@ -160,7 +124,7 @@ color:var(--muted);
 }
 
 .delete-btn{
-font-family:'JetBrains Mono', monospace;
+font-family:'JetBrains Mono',monospace;
 font-size:11px;
 border:1px solid rgba(255,95,109,.3);
 background:transparent;
@@ -171,17 +135,11 @@ cursor:pointer;
 margin-top:8px;
 }
 
-.delete-btn:hover{
-background:rgba(255,95,109,.08);
-}
-
 .empty{
 text-align:center;
 color:var(--muted);
 margin-top:40px;
 }
-
-/* MODAL */
 
 .modal{
 position:fixed;
@@ -204,9 +162,7 @@ width:100%;
 max-width:420px;
 }
 
-.field{
-margin-bottom:14px;
-}
+.field{margin-bottom:14px}
 
 label{
 font-size:11px;
@@ -216,17 +172,14 @@ margin-bottom:6px;
 text-transform:uppercase;
 }
 
-input, textarea, select{
+input,textarea,select{
 width:100%;
 background:var(--bg);
 border:1px solid var(--border);
 border-radius:8px;
 padding:10px;
 color:var(--text);
-font-family:'Manrope',sans-serif;
 }
-
-textarea{ resize:vertical; }
 
 .submit-btn{
 width:100%;
@@ -236,10 +189,10 @@ background:var(--accent);
 border:none;
 border-radius:8px;
 color:white;
-font-family:'JetBrains Mono', monospace;
 cursor:pointer;
 }
 </style>
+
 </head>
 
 <body>
@@ -247,10 +200,10 @@ cursor:pointer;
 <header>
 <div class="logo">SchoolOS</div>
 
-<div class="header-right">
+<div>
 <span class="username-tag">{{ username }}</span>
 
-<form method="POST" action="/api/logout">
+<form method="POST" action="/api/logout" style="display:inline">
 <button class="logout-btn">Выйти</button>
 </form>
 </div>
@@ -325,7 +278,7 @@ empty.style.display="none";
 
 tasks.forEach(task=>{
 
-const el = document.createElement("div");
+const el=document.createElement("div");
 el.className="task";
 
 el.innerHTML=`
@@ -333,7 +286,6 @@ el.innerHTML=`
 <div class="task-desc">${task.description || ""}</div>
 <div class="task-meta">Срок: ${task.time || "-"}</div>
 <div class="task-meta">Важность: ${task.importance}</div>
-
 <button class="delete-btn" onclick="deleteTask(${task.id})">Удалить</button>
 `;
 
@@ -363,18 +315,20 @@ function closeModal(){
 document.getElementById("modal").style.display="none";
 }
 
-document.getElementById("taskForm").addEventListener("submit", async e=>{
+document.getElementById("taskForm").addEventListener("submit",async e=>{
 
 e.preventDefault();
 
-const title = document.getElementById("title").value;
-const description = document.getElementById("description").value;
-const time = document.getElementById("time").value;
-const importance = document.getElementById("importance").value;
+let time=document.getElementById("time").value;
+if(time){time=time.replace("T"," ");}
+
+const title=document.getElementById("title").value;
+const description=document.getElementById("description").value;
+const importance=document.getElementById("importance").value;
 
 await fetch("/api/tasks",{
 method:"POST",
-headers:{ "Content-Type":"application/json" },
+headers:{"Content-Type":"application/json"},
 body:JSON.stringify({
 title,
 description,

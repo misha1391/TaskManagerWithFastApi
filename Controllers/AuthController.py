@@ -39,4 +39,5 @@ def make_auth_router(auth_service: AuthService) -> APIRouter:
         if username:
             return {"authenticated": True, "username": username}
         return {"authenticated": False}
+    
     return router

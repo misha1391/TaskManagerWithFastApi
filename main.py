@@ -11,6 +11,7 @@ from Controllers.PagesController import make_pages_router
 from Controllers.ManagerController import make_tasks_router
 
 DB_FILE = "database.db"
+FAVICON = "templates/favicon.ico"
 
 user_repo    = UserRepository(DB_FILE)
 auth_service = AuthService(user_repo)
@@ -20,7 +21,7 @@ templates    = Jinja2Templates(directory="templates")
 
 app = FastAPI()
 app.include_router(make_auth_router(auth_service))
-app.include_router(make_pages_router(auth_service, templates))
+app.include_router(make_pages_router(auth_service, templates, FAVICON))
 app.include_router(make_tasks_router(auth_service, task_service))
 
 if __name__ == "__main__":

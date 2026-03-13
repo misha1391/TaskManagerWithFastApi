@@ -13,16 +13,44 @@ class ManagerRepository:
                          time TEXT NOT NULL,
                          importance INTEGER NOT NULL
                          )""")
+            conn.execute("""CREATE TABLE IF NOT EXISTS completed_tasks(
+                         id INTEGER PRIMARY KEY AUTOINCREMENT,
+                         username TEXT NOT NULL,
+                         title TEXT NOT NULL,
+                         description TEXT NOT NULL,
+                         time TEXT NOT NULL,
+                         importance INTEGER NOT NULL
+                         )""")
     def connect(self) -> sqlite3.Connection:
         conn = sqlite3.connect(self.db_file)
         conn.row_factory = sqlite3.Row
         return conn
+    def can_user_change_id(self, id: int, username: str):
+        task = self.get_by_id(id)
+
+        return task.get("username", "") == username
+    def can_user_change_id_completed(self, id: int, username: str):
+        task = self.get_by_id_completed(id)
+
+        return task.get("username", "") == username
     def create(self, username: str, title: str, description: str, time: str, importance: int) -> Dict[str, Any]:
         try:
             with self.connect() as conn:
                 cursor = conn.cursor()
                 cursor.execute(
                     """INSERT INTO tasks(username, title, description, time, importance) VALUES (?, ?, ?, ?, ?)""",
+                    (username, title, description, time, importance)
+                )
+                conn.commit()
+            return {"success": True}
+        except Exception as e:
+            return {"success": False, "error": e}
+    def create_completed(self, username: str, title: str, description: str, time: str, importance: int) -> Dict[str, Any]:
+        try:
+            with self.connect() as conn:
+                cursor = conn.cursor()
+                cursor.execute(
+                    """INSERT INTO completed_tasks(username, title, description, time, importance) VALUES (?, ?, ?, ?, ?)""",
                     (username, title, description, time, importance)
                 )
                 conn.commit()
@@ -66,12 +94,49 @@ class ManagerRepository:
                 return [dict(row) for row in rows]
         except Exception as e:
             return {"success": False, "error": e}
-    def get_by_id(self, id: int) -> List[Any] | Dict[str, Any]:
+    def get_by_id(self, id: int) -> Dict[str, Any]:
         try:
             with self.connect() as conn:
                 cursor = conn.cursor()
                 cursor.execute("SELECT * FROM tasks WHERE id = ?", (id,))
-                data = cursor.fetchall()
-                return data
+                data = cursor.fetchone()
+                return dict(data)
+        except Exception as e:
+            return {"success": False, "error": e}
+    def get_all_completed_tasks_user(self, username: str):
+        try:
+            with self.connect() as conn:
+                cursor = conn.cursor()
+                rows = cursor.execute("SELECT * FROM completed_tasks WHERE username = ?", (username,)).fetchall()
+                return [dict(row) for row in rows]
+        except Exception as e:
+            return {"success": False, "error": e}
+    def get_by_id_completed(self, id: int):
+        try:
+            with self.connect() as conn:
+                cursor = conn.cursor()
+                cursor.execute("SELECT * FROM completed_tasks WHERE id = ?", (id,))
+                data = cursor.fetchone()
+                return dict(data)
+        except Exception as e:
+            return {"success": False, "error": e}
+    def change_state_to_completed(self, id: int):
+        try:
+            task = self.get_by_id(id)
+            self.create_completed(task.get("username", ""), task.get("title", ""), task.get("description", ""),
+                                task.get("time", ""), task.get("importance", ""))
+            self.delete_by_id(id)
+            return {"success": True}
+        except Exception as e:
+            return {"success": False, "error": e}
+    def delete_by_id_completed(self, id: int):
+        try:
+            with self.connect() as conn:
+                cursor = conn.cursor()
+                cursor.execute("SELECT * FROM completed_tasks WHERE id = ?", (id,))
+                deleted_data = cursor.fetchall()
+                cursor.execute("DELETE FROM completed_tasks WHERE id = ?", (id,))
+                conn.commit()
+                return deleted_data[0] if deleted_data else ()
         except Exception as e:
             return {"success": False, "error": e}

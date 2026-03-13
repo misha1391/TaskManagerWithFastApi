@@ -11,7 +11,18 @@ class ManagerService:
     def add_task(self, username: str, title: str, description: str, time: str, importance: int) -> Dict[str, Any]:
         return self.managerRepository.create(username, title, description, time, importance)
     def update_task(self, id: int, title: str, description: str, time: str, importance: int):
-        self.managerRepository.update_by_id(id, title, description, time, importance)
+        return self.managerRepository.update_by_id(id, title, description, time, importance)
     def delete_task(self, id: int):
-        self.managerRepository.delete_by_id(id)
-    
+        return self.managerRepository.delete_by_id(id)
+    def show_all_completed_tasks_user(self, username: str):
+        return self.managerRepository.get_all_completed_tasks_user(username)
+    def change_state_to_complete_user(self, id: int, username: str):
+        if self.managerRepository.can_user_change_id(id, username):
+            return self.managerRepository.change_state_to_completed(id)
+        
+        return {"success": False, "error": "Authorization required"}
+    def delete_completed_task(self, id: int, username: str):
+        if self.managerRepository.can_user_change_id_completed(id, username):
+            return self.managerRepository.delete_by_id_completed(id)
+        
+        return {"success": False, "error": "Authorization required"}

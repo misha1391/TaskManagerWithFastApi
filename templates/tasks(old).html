@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Задачи — SchoolOS</title>
 
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Manrope:wght@300;400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Manrope:wght@300;400;600&display=swap" rel="stylesheet">
 
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -20,13 +20,13 @@
 --text:#e8e8f0;
 --muted:#5a5a72;
 --error:#ff5f6d;
---success:#22c55e;
 }
 
 body{
 font-family:'Manrope',sans-serif;
 background:var(--bg);
 color:var(--text);
+min-height:100vh;
 }
 
 header{
@@ -39,27 +39,27 @@ border-bottom:1px solid var(--border);
 
 .logo{
 font-family:'JetBrains Mono',monospace;
+font-weight:700;
 color:var(--accent2);
-font-weight:600;
 }
 
 main{
 max-width:900px;
-margin:auto;
-padding:50px 20px;
+margin:0 auto;
+padding:60px 24px;
 }
 
 .section-header{
 display:flex;
 justify-content:space-between;
 align-items:center;
-margin:30px 0 20px;
+margin-bottom:28px;
 }
 
 .section-label{
 font-family:'JetBrains Mono',monospace;
 font-size:12px;
-letter-spacing:.12em;
+letter-spacing:.14em;
 text-transform:uppercase;
 color:var(--accent2);
 }
@@ -71,15 +71,7 @@ color:white;
 padding:10px 16px;
 border-radius:8px;
 cursor:pointer;
-}
-
-.toggle-btn{
-background:none;
-border:1px solid var(--border);
-color:var(--muted);
-padding:6px 12px;
-border-radius:6px;
-cursor:pointer;
+font-family:'JetBrains Mono',monospace;
 }
 
 .tasks{
@@ -92,15 +84,10 @@ gap:16px;
 background:var(--surface);
 border:1px solid var(--border);
 border-radius:12px;
-padding:18px;
+padding:20px;
 display:flex;
 flex-direction:column;
-gap:8px;
-}
-
-.task.completed{
-opacity:.75;
-border-color:var(--success);
+gap:10px;
 }
 
 .task-title{
@@ -125,16 +112,23 @@ margin-top:8px;
 }
 
 .btn{
+font-family:'JetBrains Mono',monospace;
 font-size:11px;
-padding:6px 10px;
-border-radius:6px;
-cursor:pointer;
 background:transparent;
+border-radius:6px;
+padding:6px 10px;
+cursor:pointer;
 }
 
-.edit-btn{border:1px solid var(--accent2);color:var(--accent2)}
-.delete-btn{border:1px solid var(--error);color:var(--error)}
-.complete-btn{border:1px solid var(--success);color:var(--success)}
+.delete-btn{
+border:1px solid rgba(255,95,109,.3);
+color:var(--error);
+}
+
+.edit-btn{
+border:1px solid rgba(108,99,255,.4);
+color:var(--accent2);
+}
 
 .modal{
 position:fixed;
@@ -142,7 +136,7 @@ top:0;
 left:0;
 width:100%;
 height:100%;
-background:rgba(0,0,0,.6);
+background:rgba(0,0,0,.5);
 display:none;
 align-items:center;
 justify-content:center;
@@ -150,29 +144,40 @@ justify-content:center;
 
 .modal-card{
 background:var(--surface);
-padding:25px;
-border-radius:12px;
-width:380px;
+border:1px solid var(--border);
+border-radius:14px;
+padding:28px;
+width:100%;
+max-width:420px;
 }
 
 .field{margin-bottom:14px}
 
+label{
+font-size:11px;
+color:var(--muted);
+display:block;
+margin-bottom:6px;
+text-transform:uppercase;
+}
+
 input,textarea,select{
 width:100%;
-padding:8px;
-border-radius:6px;
-border:1px solid var(--border);
 background:var(--bg);
+border:1px solid var(--border);
+border-radius:8px;
+padding:10px;
 color:var(--text);
 }
 
 .submit-btn{
 width:100%;
-padding:10px;
-border:none;
+margin-top:8px;
+padding:12px;
 background:var(--accent);
-color:white;
+border:none;
 border-radius:8px;
+color:white;
 cursor:pointer;
 }
 </style>
@@ -188,18 +193,11 @@ cursor:pointer;
 <main>
 
 <div class="section-header">
-<div class="section-label">// Активные задачи</div>
+<div class="section-label">// Задачи</div>
 <button class="add-btn" onclick="openModal()">+ Новая задача</button>
 </div>
 
 <div id="tasks" class="tasks"></div>
-
-<div class="section-header">
-<div class="section-label" id="completedTitle">// Выполненные задачи (0)</div>
-<button class="toggle-btn" onclick="toggleCompleted()">Показать</button>
-</div>
-
-<div id="completedTasks" class="tasks" style="display:none"></div>
 
 </main>
 
@@ -209,18 +207,22 @@ cursor:pointer;
 <form id="taskForm">
 
 <div class="field">
-<input id="title" placeholder="Название" required>
+<label>Название</label>
+<input id="title" required>
 </div>
 
 <div class="field">
-<textarea id="description" placeholder="Описание"></textarea>
+<label>Описание</label>
+<textarea id="description"></textarea>
 </div>
 
 <div class="field">
+<label>Срок выполнения</label>
 <input type="datetime-local" id="time">
 </div>
 
 <div class="field">
+<label>Важность</label>
 <select id="importance">
 <option value="1">Низкая</option>
 <option value="2">Средняя</option>
@@ -228,7 +230,7 @@ cursor:pointer;
 </select>
 </div>
 
-<button class="submit-btn">Сохранить</button>
+<button class="submit-btn" id="submitBtn">Создать задачу</button>
 
 </form>
 
@@ -238,24 +240,6 @@ cursor:pointer;
 <script>
 
 let editingTaskId=null;
-let completedVisible=false;
-
-function toggleCompleted(){
-
-completedVisible=!completedVisible;
-
-const block=document.getElementById("completedTasks");
-const btn=document.querySelector(".toggle-btn");
-
-if(completedVisible){
-block.style.display="grid";
-btn.textContent="Скрыть";
-}else{
-block.style.display="none";
-btn.textContent="Показать";
-}
-
-}
 
 async function loadTasks(){
 
@@ -274,97 +258,23 @@ el.innerHTML=`
 <div class="task-title">${task.title}</div>
 <div class="task-desc">${task.description||""}</div>
 <div class="task-meta">Срок: ${task.time||"-"}</div>
+<div class="task-meta">Важность: ${task.importance}</div>
 
 <div class="actions">
-<button class="btn complete-btn" onclick="completeTask(${task.id})">✔</button>
-<button class="btn edit-btn" onclick='editTask(${JSON.stringify(task)})'>✏</button>
-<button class="btn delete-btn" onclick="deleteTask(${task.id})">🗑</button>
+<button class="btn edit-btn" onclick='editTask(${JSON.stringify(task)})'>Изменить</button>
+<button class="btn delete-btn" onclick="deleteTask(${task.id})">Удалить</button>
 </div>
 `;
 
 container.appendChild(el);
 
 });
-
-}
-
-async function loadCompletedTasks(){
-
-const res=await fetch("/api/completed_tasks");
-const tasks=await res.json();
-
-document.getElementById("completedTitle").textContent=`// Выполненные задачи (${tasks.length})`;
-
-const container=document.getElementById("completedTasks");
-container.innerHTML="";
-
-tasks.forEach(task=>{
-
-const el=document.createElement("div");
-el.className="task completed";
-
-el.innerHTML=`
-<div class="task-title">${task.title}</div>
-<div class="task-desc">${task.description||""}</div>
-
-<div class="actions">
-<button class="btn edit-btn" onclick='restoreTask(${JSON.stringify(task)})'>↩</button>
-<button class="btn delete-btn" onclick="deleteCompletedTask(${task.id})">🗑</button>
-</div>
-`;
-
-container.appendChild(el);
-
-});
-
-}
-
-async function completeTask(id){
-
-await fetch(`/api/completed_tasks/${id}`,{
-method:"POST"
-});
-
-loadTasks();
-loadCompletedTasks();
-
-}
-
-async function restoreTask(task){
-
-await fetch("/api/tasks",{
-method:"POST",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify({
-title:task.title,
-description:task.description,
-time:task.time,
-importance:task.importance
-})
-});
-
-await fetch(`/api/completed_tasks/${task.id}`,{
-method:"DELETE"
-});
-
-loadTasks();
-loadCompletedTasks();
-
-}
-
-async function deleteCompletedTask(id){
-
-if(!confirm("Удалить выполненную задачу?"))return;
-
-await fetch(`/api/completed_tasks/${id}`,{
-method:"DELETE"
-});
-
-loadCompletedTasks();
 
 }
 
 async function deleteTask(id){
+
+if(!confirm("Удалить задачу?"))return;
 
 await fetch(`/api/tasks/${id}`,{
 method:"DELETE"
@@ -387,6 +297,8 @@ document.getElementById("time").value=task.time.replace(" ","T");
 
 document.getElementById("importance").value=task.importance;
 
+document.getElementById("submitBtn").textContent="Сохранить";
+
 openModal();
 
 }
@@ -399,6 +311,7 @@ function closeModal(){
 document.getElementById("modal").style.display="none";
 editingTaskId=null;
 document.getElementById("taskForm").reset();
+document.getElementById("submitBtn").textContent="Создать задачу";
 }
 
 document.getElementById("taskForm").addEventListener("submit",async e=>{
@@ -432,7 +345,6 @@ loadTasks();
 });
 
 loadTasks();
-loadCompletedTasks();
 
 </script>
 
